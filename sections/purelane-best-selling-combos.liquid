@@ -13,18 +13,17 @@
         {% assign combo_total = 0 %}
         {% assign combo_variants = '' %}
         {% assign selected_count = 0 %}
-        {% assign combo_available = true %}
+        {% assign unavailable_count = 0 %}
         {% for i in (1..5) %}
           {% assign key = 'product_' | append: i %}
           {% assign component = block.settings[key] %}
           {% if component != blank %}
             {% assign selected_count = selected_count | plus: 1 %}
             {% assign combo_total = combo_total | plus: component.price %}
-            {% assign component_variant = component.first_available_variant %}
-            {% if component_variant %}
-              {% assign combo_variants = combo_variants | append: component_variant.id | append: ',' %}
+            {% if component.first_available_variant %}
+              {% assign combo_variants = combo_variants | append: component.first_available_variant.id | append: ',' %}
             {% else %}
-              {% assign combo_available = false %}
+              {% assign unavailable_count = unavailable_count | plus: 1 %}
             {% endif %}
           {% endif %}
         {% endfor %}
@@ -64,23 +63,14 @@
               <div class="pl-count">{{ selected_count }} products</div>
               {% if block.settings.description != blank %}<p>{{ block.settings.description }}</p>{% endif %}
 
-              {% assign bundle_product = block.settings.bundle_product %}
-              {% if bundle_product != blank %}
-                <div class="pl-price-row">
-                  <strong>{{ bundle_product.price | money }}</strong>
-                  {% if bundle_product.compare_at_price > bundle_product.price %}<s>{{ bundle_product.compare_at_price | money }}</s>{% endif %}
-                </div>
-                {% unless bundle_product.available %}{% assign combo_available = false %}{% endunless %}
-              {% else %}
-                <div class="pl-price-row"><strong>{{ combo_total | money }}</strong></div>
-                <div class="pl-fine">Component total · no bundle discount configured</div>
-              {% endif %}
+              <div class="pl-price-row"><strong>{{ combo_total | money }}</strong></div>
+              <div class="pl-fine">Component total · live Shopify product prices</div>
 
               <div class="pl-fine">{{ section.settings.fine_print | escape }}</div>
-              {% if combo_available and combo_variants != blank %}
+              {% if unavailable_count == 0 and combo_variants != blank %}
                 <button class="pl-btn{% if featured %} pl-btn--primary{% else %} pl-btn--ghost{% endif %} pl-bundle-add" type="button" data-variant-ids="{{ combo_variants | escape }}">{{ section.settings.button_label | escape }} <span aria-hidden="true">→</span></button>
               {% else %}
-                <button class="pl-btn pl-btn--ghost" type="button" disabled>Currently unavailable</button>
+                <button class="pl-btn pl-btn--ghost pl-bundle-add" type="button" disabled>Unavailable</button>
               {% endif %}
             </div>
           </article>
@@ -97,13 +87,17 @@
   if(window.__purelaneBundleAddBound)return; window.__purelaneBundleAddBound=true;
   document.addEventListener('click',function(e){
     var b=e.target.closest('.pl-bundle-add'); if(!b)return;
-    var ids=(b.dataset.variantIds||'').split(',').filter(Boolean).map(function(id){return {id:Number(id),quantity:1};});
-    if(!ids.length)return;
+    var raw=(b.dataset.variantIds||'').split(',').filter(Boolean);
+    if(!raw.length || b.disabled)return;
+    var quantities={};
+    raw.forEach(function(id){quantities[id]=(quantities[id]||0)+1;});
+    var ids=Object.keys(quantities).map(function(id){return {id:Number(id),quantity:quantities[id]};});
     b.disabled=true;
-    fetch(window.Shopify.routes.root + 'cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:ids})})
-      .then(function(r){return r.json().then(function(data){if(!r.ok)throw new Error(data.description||data.message||'Cart add failed'); return data;});})
-      .then(function(){window.location.href=window.Shopify.routes.root + 'cart';})
-      .catch(function(err){console.error(err); b.disabled=false; b.setAttribute('aria-label',err.message);});
+    var root=(window.Shopify && window.Shopify.routes && window.Shopify.routes.root) ? window.Shopify.routes.root : '/';
+    fetch(root+'cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:ids})})
+      .then(function(r){return r.json().then(function(data){if(!r.ok)throw new Error(data.description || data.message || 'Cart add failed'); return data;});})
+      .then(function(){window.location.href=root+'cart';})
+      .catch(function(error){console.error('Purelane bundle add failed:',error); b.disabled=false;});
   });
 })();
 </script>
@@ -123,7 +117,6 @@
     {"type":"text","id":"button_label","label":"Button label","default":"Shop bundle"}
   ],
   "blocks":[{"type":"combo","name":"Combo","limit":10,"settings":[
-    {"type":"product","id":"bundle_product","label":"Optional bundle product (for a true bundle price)"},
     {"type":"checkbox","id":"featured","label":"Featured","default":false},
     {"type":"text","id":"save_label","label":"Save label","default":""},
     {"type":"text","id":"flag","label":"Flag","default":""},

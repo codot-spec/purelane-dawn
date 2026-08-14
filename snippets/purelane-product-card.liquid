@@ -1,7 +1,10 @@
 {% assign product = card_product %}
+{% assign resolved_badge = card_badge | default: product.metafields.custom.badge_label.value %}
+{% assign resolved_rating = card_rating | default: product.metafields.custom.rating_value.value %}
+{% assign resolved_reviews = card_reviews | default: product.metafields.custom.rating_count.value %}
 <article class="pl-glass pl-card"{% if card_attributes %} {{ card_attributes }}{% endif %}>
   <div class="pl-card__shot">
-    {% if card_badge != blank %}<span class="pl-pill">{{ card_badge | escape }}</span>{% endif %}
+    {% if resolved_badge != blank %}<span class="pl-pill">{{ resolved_badge | escape }}</span>{% endif %}
     <a href="{{ product.url }}" class="pl-card__media" aria-label="{{ product.title | escape }}">
       {% if product.featured_image %}
         {{ product.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '240,360,500,700', sizes: '(max-width: 859px) 44vw, 22vw', alt: product.featured_image.alt | default: product.title }}
@@ -11,10 +14,12 @@
     </a>
   </div>
   <h3 class="pl-card__title"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
-  <div class="pl-card__rate" aria-label="Product rating">
-    <b>★ {{ card_rating | default: '4.8' }}</b>
-    {% if card_reviews != blank %}<span>· {{ card_reviews | escape }} reviews</span>{% endif %}
-  </div>
+  {% if resolved_rating != blank or resolved_reviews != blank %}
+    <div class="pl-card__rate" aria-label="Product rating">
+      {% if resolved_rating != blank %}<b>★ {{ resolved_rating }}</b>{% endif %}
+      {% if resolved_reviews != blank %}<span>{% if resolved_rating != blank %}· {% endif %}{{ resolved_reviews }} reviews</span>{% endif %}
+    </div>
+  {% endif %}
   <div class="pl-card__price">
     <strong>{{ product.price | money }}</strong>
     {% if product.compare_at_price > product.price %}<s>{{ product.compare_at_price | money }}</s>{% endif %}
@@ -23,7 +28,7 @@
       <em>{{ discount }}% off</em>
     {% endif %}
   </div>
-  {% if product.available %}
+  {% if product.available and product.first_available_variant %}
     {% form 'product', product, class: 'pl-card__form' %}
       <input type="hidden" name="id" value="{{ product.first_available_variant.id }}">
       <input type="hidden" name="quantity" value="1">

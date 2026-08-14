@@ -10,9 +10,9 @@
       {% for block in section.blocks %}
         {% assign p = block.settings.product %}
         {% if p != blank %}
-          {% assign badge = p.metafields.custom.badge.value %}
-          {% assign rating = p.metafields.custom.rating.value %}
-          {% assign review_count = p.metafields.custom.review_count.value %}
+          {% assign badge = p.metafields.custom.badge_label.value %}
+          {% assign rating = p.metafields.custom.rating_value.value %}
+          {% assign review_count = p.metafields.custom.rating_count.value %}
           <article class="pl-glass pl-card" {{ block.shopify_attributes }}>
             <div class="pl-card__shot">
               {% if badge != blank %}<span class="pl-pill">{{ badge | escape }}</span>{% endif %}

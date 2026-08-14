@@ -14,18 +14,17 @@
         {% assign bundle_total = 0 %}
         {% assign bundle_variants = '' %}
         {% assign selected_count = 0 %}
-        {% assign bundle_available = true %}
+        {% assign unavailable_count = 0 %}
         {% for i in (1..5) %}
           {% assign key = 'component_' | append: i %}
           {% assign p = block.settings[key] %}
           {% if p != blank %}
             {% assign selected_count = selected_count | plus: 1 %}
             {% assign bundle_total = bundle_total | plus: p.price %}
-            {% assign component_variant = p.first_available_variant %}
-            {% if component_variant %}
-              {% assign bundle_variants = bundle_variants | append: component_variant.id | append: ',' %}
+            {% if p.first_available_variant %}
+              {% assign bundle_variants = bundle_variants | append: p.first_available_variant.id | append: ',' %}
             {% else %}
-              {% assign bundle_available = false %}
+              {% assign unavailable_count = unavailable_count | plus: 1 %}
             {% endif %}
           {% endif %}
         {% endfor %}
@@ -55,10 +54,10 @@
               {% if block.settings.bullet_2 != blank %}<li><span aria-hidden="true">✓</span>{{ block.settings.bullet_2 | escape }}</li>{% endif %}
               {% if block.settings.bullet_3 != blank %}<li><span aria-hidden="true">✓</span>{{ block.settings.bullet_3 | escape }}</li>{% endif %}
             </ul>
-            {% if bundle_available and bundle_variants != blank %}
+            {% if unavailable_count == 0 and bundle_variants != blank %}
               <button class="pl-btn {% if featured %}pl-btn--primary{% else %}pl-btn--ghost{% endif %} pl-bundle-add" type="button" data-variant-ids="{{ bundle_variants | escape }}">{{ section.settings.button_label | escape }}{% if featured %}<span aria-hidden="true">→</span>{% endif %}</button>
             {% else %}
-              <button class="pl-btn pl-btn--ghost" type="button" disabled>Currently unavailable</button>
+              <button class="pl-btn pl-btn--ghost pl-bundle-add" type="button" disabled>Unavailable</button>
             {% endif %}
           </article>
         {% endif %}
@@ -72,13 +71,17 @@
   if(window.__purelaneBundleAddBound)return; window.__purelaneBundleAddBound=true;
   document.addEventListener('click',function(e){
     var b=e.target.closest('.pl-bundle-add'); if(!b)return;
-    var ids=(b.dataset.variantIds||'').split(',').filter(Boolean).map(function(id){return {id:Number(id),quantity:1};});
-    if(!ids.length)return;
+    var raw=(b.dataset.variantIds||'').split(',').filter(Boolean);
+    if(!raw.length || b.disabled)return;
+    var quantities={};
+    raw.forEach(function(id){quantities[id]=(quantities[id]||0)+1;});
+    var ids=Object.keys(quantities).map(function(id){return {id:Number(id),quantity:quantities[id]};});
     b.disabled=true;
-    fetch(window.Shopify.routes.root + 'cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:ids})})
-      .then(function(r){return r.json().then(function(data){if(!r.ok)throw new Error(data.description||data.message||'Cart add failed'); return data;});})
-      .then(function(){window.location.href=window.Shopify.routes.root + 'cart';})
-      .catch(function(err){console.error(err); b.disabled=false; b.setAttribute('aria-label',err.message);});
+    var root=(window.Shopify && window.Shopify.routes && window.Shopify.routes.root) ? window.Shopify.routes.root : '/';
+    fetch(root+'cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:ids})})
+      .then(function(r){return r.json().then(function(data){if(!r.ok)throw new Error(data.description || data.message || 'Cart add failed'); return data;});})
+      .then(function(){window.location.href=root+'cart';})
+      .catch(function(error){console.error('Purelane bundle add failed:',error); b.disabled=false;});
   });
 })();
 </script>
