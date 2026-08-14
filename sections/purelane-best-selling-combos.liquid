@@ -74,7 +74,7 @@
 
               <div class="pl-fine">{{ section.settings.fine_print | escape }}</div>
               {% if combo_available and combo_variants != blank %}
-                <button class="pl-btn{% if featured %} pl-btn--primary{% else %} pl-btn--ghost{% endif %} pl-bundle-add" type="button" data-variant-ids="{{ combo_variants | escape }}" data-discount-code="{{ block.settings.discount_code | escape }}">{{ section.settings.button_label | escape }} <span aria-hidden="true">→</span></button>
+                <button class="pl-btn{% if featured %} pl-btn--primary{% else %} pl-btn--ghost{% endif %} pl-bundle-add" type="button" data-variant-ids="{{ combo_variants | escape }}">{{ section.settings.button_label | escape }} <span aria-hidden="true">→</span></button>
               {% else %}
                 <button class="pl-btn pl-btn--ghost" type="button" disabled>Currently unavailable</button>
               {% endif %}
@@ -94,14 +94,12 @@
   document.addEventListener('click',function(e){
     var b=e.target.closest('.pl-bundle-add'); if(!b)return;
     var ids=(b.dataset.variantIds||'').split(',').filter(Boolean).map(function(id){return {id:Number(id),quantity:1};});
-    var discount=(b.dataset.discountCode||'').trim();
     if(!ids.length)return;
     b.disabled=true;
     fetch(window.Shopify.routes.root + 'cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:ids})})
       .then(function(r){return r.json().then(function(data){if(!r.ok)throw new Error(data.description||data.message||'Cart add failed'); return data;});})
       .then(function(){
-        if(discount){ window.location.href=window.Shopify.routes.root + 'discount/' + encodeURIComponent(discount) + '?redirect=' + encodeURIComponent(window.Shopify.routes.root + 'cart'); }
-        else { window.location.href=window.Shopify.routes.root + 'cart'; }
+        window.location.href=window.Shopify.routes.root + 'cart';
       })
       .catch(function(err){console.error(err); b.disabled=false; b.setAttribute('aria-label',err.message);});
   });
@@ -124,22 +122,17 @@
   ],
   "blocks":[{"type":"combo","name":"Combo","limit":10,"settings":[
     {"type":"text","id":"bundle_price","label":"Bundle price (₹)","default":"499"},
-    {"type":"text","id":"discount_code","label":"Shopify discount code","default":""},
     {"type":"checkbox","id":"featured","label":"Featured","default":false},
-    {"type":"text","id":"save_label","label":"Save label","default":""},
-    {"type":"text","id":"flag","label":"Flag","default":""},
-    {"type":"text","id":"title","label":"Title","default":""},
-    {"type":"textarea","id":"description","label":"Description","default":""},
     {"type":"product","id":"product_1","label":"Component 1"},
-    {"type":"text","id":"product_1_caption","label":"Component 1 caption","default":""},
+    {"type":"text","id":"product_1_caption","label":"Component 1 caption"},
     {"type":"product","id":"product_2","label":"Component 2"},
-    {"type":"text","id":"product_2_caption","label":"Component 2 caption","default":""},
+    {"type":"text","id":"product_2_caption","label":"Component 2 caption"},
     {"type":"product","id":"product_3","label":"Component 3"},
-    {"type":"text","id":"product_3_caption","label":"Component 3 caption","default":""},
+    {"type":"text","id":"product_3_caption","label":"Component 3 caption"},
     {"type":"product","id":"product_4","label":"Component 4"},
-    {"type":"text","id":"product_4_caption","label":"Component 4 caption","default":""},
+    {"type":"text","id":"product_4_caption","label":"Component 4 caption"},
     {"type":"product","id":"product_5","label":"Component 5"},
-    {"type":"text","id":"product_5_caption","label":"Component 5 caption","default":""}
+    {"type":"text","id":"product_5_caption","label":"Component 5 caption"}
   ]}],
   "presets":[{"name":"03 Best-selling combos","blocks":[{"type":"combo"},{"type":"combo"},{"type":"combo"},{"type":"combo"}]}]
 }

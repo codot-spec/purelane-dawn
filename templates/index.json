@@ -123,51 +123,51 @@
           "type": "combo",
           "settings": {
             "featured": true,
-            "flag": "Most popular",
-            "count": "3",
             "product_1": "kitchen-cleaner",
             "product_2": "dishwash-gel",
-            "product_3": "tap-cleaner-limescale-remover-with-extra-10-ml"
+            "product_3": "tap-cleaner-limescale-remover-with-extra-10-ml",
+            "bundle_price": "499"
           }
         },
         "combo_2": {
           "type": "combo",
           "settings": {
-            "count": "3",
+            "featured": false,
             "product_1": "laundry-detergent",
             "product_2": "washing-machine-cleaner",
-            "product_3": "floor-cleaner"
+            "product_3": "floor-cleaner",
+            "bundle_price": "499"
           }
         },
         "combo_3": {
           "type": "combo",
           "settings": {
             "featured": true,
-            "flag": "Best value",
-            "save_label": "Biggest saving",
-            "count": "5",
             "product_1": "kitchen-cleaner",
             "product_2": "laundry-detergent",
             "product_3": "floor-cleaner",
             "product_4": "toilet-cleaner",
-            "product_5": "dishwash-gel"
+            "product_5": "dishwash-gel",
+            "bundle_price": "799"
           }
         },
         "combo_4": {
           "type": "combo",
           "settings": {
-            "count": "3",
+            "featured": false,
             "product_1": "toilet-cleaner",
             "product_2": "tap-cleaner-limescale-remover-with-extra-10-ml",
-            "product_3": "copper-bronze-brass-cleaner"
+            "product_3": "copper-bronze-brass-cleaner",
+            "bundle_price": "499"
           }
         },
         "combo_5": {
           "type": "combo",
           "settings": {
-            "count": "2",
+            "featured": false,
             "product_1": "tap-cleaner-limescale-remover-with-extra-10-ml",
-            "product_2": "toilet-cleaner"
+            "product_2": "toilet-cleaner",
+            "bundle_price": "349"
           }
         }
       },
@@ -186,10 +186,12 @@
         "tier_1": {
           "type": "tier",
           "settings": {
+            "featured": false,
             "tag": "Starter",
             "quantity": "2",
             "component_1": "kitchen-cleaner",
-            "component_2": "dishwash-gel"
+            "component_2": "dishwash-gel",
+            "bundle_price": "349"
           }
         },
         "tier_2": {
@@ -200,19 +202,22 @@
             "quantity": "3",
             "component_1": "kitchen-cleaner",
             "component_2": "tap-cleaner-limescale-remover-with-extra-10-ml",
-            "component_3": "dishwash-gel"
+            "component_3": "dishwash-gel",
+            "bundle_price": "499"
           }
         },
         "tier_3": {
           "type": "tier",
           "settings": {
+            "featured": false,
             "tag": "Whole home",
             "quantity": "5",
             "component_1": "kitchen-cleaner",
             "component_2": "laundry-detergent",
             "component_3": "floor-cleaner",
             "component_4": "toilet-cleaner",
-            "component_5": "dishwash-gel"
+            "component_5": "dishwash-gel",
+            "bundle_price": "799"
           }
         }
       },
@@ -420,28 +425,28 @@
         "item_1": {
           "type": "item",
           "settings": {
-            "mark": "\u2767",
+            "mark": "❧",
             "text": "Plant derived\nformulas"
           }
         },
         "item_2": {
           "type": "item",
           "settings": {
-            "mark": "\u25a3",
+            "mark": "▣",
             "text": "Recyclable\npackaging"
           }
         },
         "item_3": {
           "type": "item",
           "settings": {
-            "mark": "\u2661",
+            "mark": "♡",
             "text": "Safe for\nkids & pets"
           }
         },
         "item_4": {
           "type": "item",
           "settings": {
-            "mark": "\u25ce",
+            "mark": "◎",
             "text": "Made in\nIndia"
           }
         }
