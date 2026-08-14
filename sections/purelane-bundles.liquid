@@ -10,21 +10,22 @@
 
     <div class="pl-tiers">
       {% for block in section.blocks %}
-        {% assign qty = block.settings.quantity | plus: 0 %}
         {% assign bundle_total = 0 %}
         {% assign bundle_variants = '' %}
+        {% assign bundle_price = block.settings.bundle_price | plus: 0 %}
         {% assign selected_count = 0 %}
-        {% assign unavailable_count = 0 %}
+        {% assign bundle_available = true %}
         {% for i in (1..5) %}
           {% assign key = 'component_' | append: i %}
           {% assign p = block.settings[key] %}
           {% if p != blank %}
             {% assign selected_count = selected_count | plus: 1 %}
             {% assign bundle_total = bundle_total | plus: p.price %}
-            {% if p.first_available_variant %}
-              {% assign bundle_variants = bundle_variants | append: p.first_available_variant.id | append: ',' %}
+            {% assign component_variant = p.first_available_variant %}
+            {% if component_variant %}
+              {% assign bundle_variants = bundle_variants | append: component_variant.id | append: ',' %}
             {% else %}
-              {% assign unavailable_count = unavailable_count | plus: 1 %}
+              {% assign bundle_available = false %}
             {% endif %}
           {% endif %}
         {% endfor %}
@@ -46,18 +47,20 @@
                 {% endif %}
               {% endfor %}
             </div>
+            {% assign savings = bundle_total | minus: bundle_price %}
             <div class="pl-tier__qty">{{ selected_count }}<small>Products</small></div>
-            <div class="pl-tier__price">{{ bundle_total | money }}</div>
+            <div class="pl-tier__price">{% if bundle_price > 0 %}{{ bundle_price | money }}{% else %}{{ bundle_total | money }}{% endif %}</div>
+            {% if bundle_price > 0 and savings > 0 %}<div class="pl-fine">Save {{ savings | money }} · <s>{{ bundle_total | money }}</s></div>{% endif %}
             {% if block.settings.per_product != blank %}<p class="pl-body-s">{{ block.settings.per_product | escape }}</p>{% endif %}
             <ul>
               {% if block.settings.bullet_1 != blank %}<li><span aria-hidden="true">✓</span>{{ block.settings.bullet_1 | escape }}</li>{% endif %}
               {% if block.settings.bullet_2 != blank %}<li><span aria-hidden="true">✓</span>{{ block.settings.bullet_2 | escape }}</li>{% endif %}
               {% if block.settings.bullet_3 != blank %}<li><span aria-hidden="true">✓</span>{{ block.settings.bullet_3 | escape }}</li>{% endif %}
             </ul>
-            {% if unavailable_count == 0 and bundle_variants != blank %}
-              <button class="pl-btn {% if featured %}pl-btn--primary{% else %}pl-btn--ghost{% endif %} pl-bundle-add" type="button" data-variant-ids="{{ bundle_variants | escape }}">{{ section.settings.button_label | escape }}{% if featured %}<span aria-hidden="true">→</span>{% endif %}</button>
+            {% if bundle_available and bundle_variants != blank %}
+              <button class="pl-btn {% if featured %}pl-btn--primary{% else %}pl-btn--ghost{% endif %} pl-bundle-add" type="button" data-variant-ids="{{ bundle_variants | escape }}" data-discount-code="{{ block.settings.discount_code | escape }}">{{ section.settings.button_label | escape }}{% if featured %}<span aria-hidden="true">→</span>{% endif %}</button>
             {% else %}
-              <button class="pl-btn pl-btn--ghost pl-bundle-add" type="button" disabled>Unavailable</button>
+              <button class="pl-btn pl-btn--ghost" type="button" disabled>Currently unavailable</button>
             {% endif %}
           </article>
         {% endif %}
@@ -71,17 +74,17 @@
   if(window.__purelaneBundleAddBound)return; window.__purelaneBundleAddBound=true;
   document.addEventListener('click',function(e){
     var b=e.target.closest('.pl-bundle-add'); if(!b)return;
-    var raw=(b.dataset.variantIds||'').split(',').filter(Boolean);
-    if(!raw.length || b.disabled)return;
-    var quantities={};
-    raw.forEach(function(id){quantities[id]=(quantities[id]||0)+1;});
-    var ids=Object.keys(quantities).map(function(id){return {id:Number(id),quantity:quantities[id]};});
+    var ids=(b.dataset.variantIds||'').split(',').filter(Boolean).map(function(id){return {id:Number(id),quantity:1};});
+    var discount=(b.dataset.discountCode||'').trim();
+    if(!ids.length)return;
     b.disabled=true;
-    var root=(window.Shopify && window.Shopify.routes && window.Shopify.routes.root) ? window.Shopify.routes.root : '/';
-    fetch(root+'cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:ids})})
-      .then(function(r){return r.json().then(function(data){if(!r.ok)throw new Error(data.description || data.message || 'Cart add failed'); return data;});})
-      .then(function(){window.location.href=root+'cart';})
-      .catch(function(error){console.error('Purelane bundle add failed:',error); b.disabled=false;});
+    fetch(window.Shopify.routes.root + 'cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:ids})})
+      .then(function(r){return r.json().then(function(data){if(!r.ok)throw new Error(data.description||data.message||'Cart add failed'); return data;});})
+      .then(function(){
+        if(discount){ window.location.href=window.Shopify.routes.root + 'discount/' + encodeURIComponent(discount) + '?redirect=' + encodeURIComponent(window.Shopify.routes.root + 'cart'); }
+        else { window.location.href=window.Shopify.routes.root + 'cart'; }
+      })
+      .catch(function(err){console.error(err); b.disabled=false; b.setAttribute('aria-label',err.message);});
   });
 })();
 </script>
@@ -102,6 +105,8 @@
     {"type":"checkbox","id":"featured","label":"Featured","default":false},
     {"type":"text","id":"tag","label":"Tag","default":"Starter"},
     {"type":"text","id":"quantity","label":"Displayed quantity","default":"2"},
+    {"type":"text","id":"bundle_price","label":"Bundle price (₹)","default":"349"},
+    {"type":"text","id":"discount_code","label":"Shopify discount code","default":""},
     {"type":"text","id":"per_product","label":"Per-product note","default":""},
     {"type":"product","id":"component_1","label":"Component 1"},
     {"type":"product","id":"component_2","label":"Component 2"},
