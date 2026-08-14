@@ -9,64 +9,51 @@
     <div class="pl-shelf">
       {% for block in section.blocks %}
         {% assign p = block.settings.product %}
-        {% case forloop.index %}
-          {% when 1, 5 %}{% assign visual = 'p-tap' %}{% assign fallback_title = 'Tap cleaner & limescale remover' %}{% assign fallback_badge = 'Best seller' %}{% assign fallback_reviews = '237' %}
-          {% when 2, 6 %}{% assign visual = 'p-kitchen' %}{% assign fallback_title = 'Kitchen cleaner, foaming' %}{% assign fallback_badge = 'Best seller' %}{% assign fallback_reviews = '254' %}
-          {% when 3, 7 %}{% assign visual = 'p-metal' %}{% assign fallback_title = 'Copper, bronze & brass cleaner' %}{% assign fallback_badge = 'Top rated' %}{% assign fallback_reviews = '231' %}
-          {% when 4, 8 %}{% assign visual = 'p-wm' %}{% assign fallback_title = 'Washing machine cleaner & descaler' %}{% assign fallback_badge = 'New' %}{% assign fallback_reviews = '183' %}
-          {% else %}{% assign visual = 'p-kitchen' %}{% assign fallback_title = 'Purelane cleaner' %}{% assign fallback_badge = 'Best seller' %}{% assign fallback_reviews = '0' %}
-        {% endcase %}
-
-        <article class="pl-glass pl-card" {{ block.shopify_attributes }}>
-          <div class="pl-card__shot">
-            {% assign badge = p.metafields.custom.badge.value | default: block.settings.badge | default: fallback_badge %}
-            {% if badge != blank %}<span class="pl-pill">{{ badge | escape }}</span>{% endif %}
-            {% if p != blank and p.featured_image %}
+        {% if p != blank %}
+          {% assign badge = p.metafields.custom.badge.value %}
+          {% assign rating = p.metafields.custom.rating.value %}
+          {% assign review_count = p.metafields.custom.review_count.value %}
+          <article class="pl-glass pl-card" {{ block.shopify_attributes }}>
+            <div class="pl-card__shot">
+              {% if badge != blank %}<span class="pl-pill">{{ badge | escape }}</span>{% endif %}
               <a href="{{ p.url }}" class="pl-card__media" aria-label="{{ p.title | escape }}">
-                {{ p.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '240,360,500,700', sizes: '(max-width: 859px) 44vw, 22vw', alt: p.featured_image.alt | default: p.title }}
+                {% if p.featured_image %}
+                  {{ p.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '240,360,500,700', sizes: '(max-width: 859px) 44vw, 22vw', alt: p.featured_image.alt | default: p.title }}
+                {% else %}
+                  {{ 'product-1' | placeholder_svg_tag: 'pl-image-placeholder' }}
+                {% endif %}
               </a>
+            </div>
+
+            <h3 class="pl-card__title"><a href="{{ p.url }}">{{ p.title | escape }}</a></h3>
+
+            {% if rating != blank or review_count != blank %}
+              <div class="pl-card__rate" aria-label="Product rating">
+                {% if rating != blank %}<b>★ {{ rating }}</b>{% endif %}
+                {% if review_count != blank %}<span>{% if rating != blank %}· {% endif %}{{ review_count }} reviews</span>{% endif %}
+              </div>
+            {% endif %}
+
+            <div class="pl-card__price">
+              <strong>{{ p.price | money }}</strong>
+              {% if p.compare_at_price > p.price %}
+                <s>{{ p.compare_at_price | money }}</s>
+                {% assign discount = p.compare_at_price | minus: p.price | times: 100.0 | divided_by: p.compare_at_price | round %}
+                <em>{{ discount }}% off</em>
+              {% endif %}
+            </div>
+
+            {% if p.available %}
+              {% form 'product', p, class: 'pl-card__form' %}
+                <input type="hidden" name="id" value="{{ p.first_available_variant.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button class="pl-btn pl-btn--ghost pl-btn--small" type="submit">{{ section.settings.button_label | escape }}</button>
+              {% endform %}
             {% else %}
-              <span class="pl-card__media" role="img" aria-label="{{ fallback_title | escape }}"><span class="pimg {{ visual }}"></span></span>
+              <button class="pl-btn pl-btn--ghost pl-btn--small" type="button" disabled>Sold out</button>
             {% endif %}
-          </div>
-
-          {% assign title = p.title | default: fallback_title %}
-          <h3 class="pl-card__title">
-            {% if p != blank %}<a href="{{ p.url }}">{{ title | escape }}</a>{% else %}{{ title | escape }}{% endif %}
-          </h3>
-          <div class="pl-card__rate" aria-label="Product rating">
-            {% assign rating = p.metafields.custom.rating.value | default: block.settings.rating | default: '4.8' %}
-            {% assign review_count = p.metafields.custom.review_count.value | default: block.settings.reviews | default: fallback_reviews %}
-            <b>★ {{ rating }}</b>
-            <span>· {{ review_count }} reviews</span>
-          </div>
-
-          {% if p != blank %}
-            {% assign price = p.price %}
-            {% assign compare = p.compare_at_price %}
-          {% else %}
-            {% assign price = 20000 %}
-            {% assign compare = 29900 %}
-          {% endif %}
-          <div class="pl-card__price">
-            <strong>{{ price | money }}</strong>
-            {% if compare > price %}<s>{{ compare | money }}</s>{% endif %}
-            {% if compare > price %}
-              {% assign discount = compare | minus: price | times: 100.0 | divided_by: compare | round %}
-              <em>{{ discount }}% off</em>
-            {% endif %}
-          </div>
-
-          {% if p != blank and p.available %}
-            {% form 'product', p, class: 'pl-card__form' %}
-              <input type="hidden" name="id" value="{{ p.selected_or_first_available_variant.id }}">
-              <input type="hidden" name="quantity" value="1">
-              <button class="pl-btn pl-btn--ghost pl-btn--small" type="submit">{{ section.settings.button_label | escape }}</button>
-            {% endform %}
-          {% else %}
-            <button class="pl-btn pl-btn--ghost pl-btn--small" type="button">{{ section.settings.button_label | escape }}</button>
-          {% endif %}
-        </article>
+          </article>
+        {% endif %}
       {% endfor %}
     </div>
   </div>
@@ -85,10 +72,7 @@
   ],
   "blocks":[
     {"type":"product","name":"Product","limit":12,"settings":[
-      {"type":"product","id":"product","label":"Real Shopify product"},
-      {"type":"text","id":"badge","label":"Badge","default":"Best seller"},
-      {"type":"text","id":"rating","label":"Rating","default":"4.8"},
-      {"type":"text","id":"reviews","label":"Review count","default":"237"}
+      {"type":"product","id":"product","label":"Shopify product"}
     ]}
   ],
   "presets":[{"name":"02 Shop / product grid","blocks":[{"type":"product"},{"type":"product"},{"type":"product"},{"type":"product"},{"type":"product"},{"type":"product"},{"type":"product"},{"type":"product"}]}]

@@ -25,7 +25,7 @@
   </div>
   {% if product.available %}
     {% form 'product', product, class: 'pl-card__form' %}
-      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+      <input type="hidden" name="id" value="{{ product.first_available_variant.id }}">
       <input type="hidden" name="quantity" value="1">
       <button class="pl-btn pl-btn--ghost pl-btn--small" type="submit">{{ card_button | default: 'Add to cart' | escape }}</button>
     {% endform %}
