@@ -1,0 +1,143 @@
+<section id="{{ section.settings.section_id | escape }}" class="pl-section pl-combos" data-scene="3">
+  <div class="page-width">
+    <div class="pl-panel-head">
+      <span class="pl-kicker">{{ section.settings.kicker | escape }}</span>
+      <h2 class="pl-d2">{{ section.settings.heading | escape }}</h2>
+      <div class="pl-rule" aria-hidden="true"><i></i><span>✦</span><i></i></div>
+      {% if section.settings.description != blank %}<p class="pl-lede">{{ section.settings.description }}</p>{% endif %}
+    </div>
+
+    <div class="pl-comborail" tabindex="0" aria-label="{{ section.settings.aria_label | escape }}">
+      {% for block in section.blocks %}
+        {% assign fb_featured = false %}
+        {% case forloop.index %}
+          {% when 1 %}
+            {% assign fb_title = 'Kitchen essentials' %}{% assign fb_count = '3' %}{% assign fb_desc = 'Includes: Foaming Kitchen Cleaner, Dishwash Gel & Tap Cleaner. Everything for a sparkling kitchen, no need to pick separately.' %}{% assign fb_price = 49900 %}{% assign fb_compare = 89700 %}{% assign fb_save = 'You save ₹398' %}{% assign fb_flag = 'Most popular' %}{% assign fb_featured = false %}{% assign fb_cap1 = 'Cuts grease instantly' %}{% assign fb_cap2 = 'Squeaky clean dishes' %}{% assign fb_cap3 = 'Melts hard water stains' %}
+          {% when 2 %}
+            {% assign fb_title = 'Laundry care bundle' %}{% assign fb_count = '3' %}{% assign fb_desc = 'Includes: Laundry Detergent, Fabric Conditioner & Machine Cleaner Powder. Softer, fresher wash, all in one box.' %}{% assign fb_price = 49900 %}{% assign fb_compare = 94700 %}{% assign fb_save = 'You save ₹448' %}{% assign fb_flag = '' %}{% assign fb_featured = false %}{% assign fb_cap1 = 'Removes tough stains & odour' %}{% assign fb_cap2 = 'Softens & freshens every wash' %}{% assign fb_cap3 = 'Deep-cleans your machine' %}
+          {% when 3 %}
+            {% assign fb_title = 'Complete home bundle' %}{% assign fb_count = '5' %}{% assign fb_desc = 'Includes: Kitchen Cleaner, Laundry Detergent, Floor Cleaner, Toilet Cleaner & Handwash. Our biggest saving box.' %}{% assign fb_price = 79900 %}{% assign fb_compare = 149500 %}{% assign fb_save = 'Biggest saving' %}{% assign fb_flag = 'Best value' %}{% assign fb_featured = true %}{% assign fb_cap1 = 'Cuts grease instantly' %}{% assign fb_cap2 = 'Kills 99.9% germs' %}{% assign fb_cap3 = 'Gentle hydration for hands' %}
+          {% when 4 %}
+            {% assign fb_title = 'Bathroom deep clean' %}{% assign fb_count = '3' %}{% assign fb_desc = 'Includes: Toilet Cleaner, Tap Cleaner & Magic Eraser. A complete bathroom refresh in one box.' %}{% assign fb_price = 49900 %}{% assign fb_compare = 89700 %}{% assign fb_save = 'You save ₹398' %}{% assign fb_flag = '' %}{% assign fb_featured = false %}{% assign fb_cap1 = 'Kills 99.9% germs' %}{% assign fb_cap2 = 'Melts hard water stains' %}{% assign fb_cap3 = 'Scrubs away soap scum' %}
+          {% when 5 %}
+            {% assign fb_title = 'Hard water solution kit' %}{% assign fb_count = '2' %}{% assign fb_desc = 'Includes: Tap Cleaner & Toilet Cleaner. A quick, focused fix for hard water stains across the home.' %}{% assign fb_price = 34900 %}{% assign fb_compare = 59800 %}{% assign fb_save = 'You save ₹249' %}{% assign fb_flag = '' %}{% assign fb_featured = false %}{% assign fb_cap1 = 'Melts hard water stains' %}{% assign fb_cap2 = 'Fights limescale in the bowl' %}{% assign fb_cap3 = 'Scrubs away soap scum' %}
+        {% endcase %}
+
+        {% assign bundle = block.settings.bundle_product %}
+        {% assign title = block.settings.title | default: fb_title %}
+        {% assign count = block.settings.count | default: fb_count %}
+        {% assign description = block.settings.description | default: fb_desc %}
+        {% assign save_label = block.settings.save_label | default: fb_save %}
+        {% assign flag = block.settings.flag | default: fb_flag %}
+        {% assign featured = block.settings.featured | default: fb_featured %}
+        {% assign count_int = count | plus: 0 %}
+        {% assign combo_total = 0 %}
+        {% assign combo_variants = '' %}
+
+        <article class="pl-glass pl-combo{% if featured %} is-featured{% endif %}" {{ block.shopify_attributes }}>
+          <div class="pl-combo__tray">
+            {% if save_label != blank %}<span class="pl-save">{{ save_label | escape }}</span>{% endif %}
+            {% if flag != blank %}<span class="pl-flag">{{ flag | escape }}</span>{% endif %}
+            <div class="pl-stack">
+              {% for i in (1..3) %}
+                {% assign key = 'product_' | append: i %}
+                {% assign caption_key = key | append: '_caption' %}
+                {% assign component = block.settings[key] %}
+                {% assign caption = block.settings[caption_key] %}
+                {% if component != blank %}
+                  {% assign combo_total = combo_total | plus: component.price %}
+                  {% if component.selected_or_first_available_variant %}{% assign combo_variants = combo_variants | append: component.selected_or_first_available_variant.id | append: ',' %}{% endif %}
+                {% endif %}
+                {% if forloop.index == 1 %}{% assign fallback_caption = fb_cap1 %}{% elsif forloop.index == 2 %}{% assign fallback_caption = fb_cap2 %}{% else %}{% assign fallback_caption = fb_cap3 %}{% endif %}
+                {% assign caption = caption | default: fallback_caption %}
+                {% if forloop.index == 1 %}{% assign visual = 'p-kitchen' %}{% elsif forloop.index == 2 %}{% assign visual = 'p-dish' %}{% else %}{% assign visual = 'p-tap' %}{% endif %}
+                {% case forloop.parentloop.index %}
+                  {% when 2 %}{% if i == 1 %}{% assign visual = 'p-laundry' %}{% elsif i == 2 %}{% assign visual = 'p-handwash' %}{% else %}{% assign visual = 'p-wm' %}{% endif %}
+                  {% when 3 %}{% if i == 1 %}{% assign visual = 'p-kitchen' %}{% elsif i == 2 %}{% assign visual = 'p-floor' %}{% else %}{% assign visual = 'p-handwash' %}{% endif %}
+                  {% when 4 %}{% if i == 1 %}{% assign visual = 'p-toilet' %}{% elsif i == 2 %}{% assign visual = 'p-tap' %}{% else %}{% assign visual = 'p-eraser' %}{% endif %}
+                  {% when 5 %}{% if i == 1 %}{% assign visual = 'p-tap' %}{% elsif i == 2 %}{% assign visual = 'p-toilet' %}{% else %}{% assign visual = 'p-eraser' %}{% endif %}
+                {% endcase %}
+                {% if component != blank or i <= count_int %}
+                  {% unless i == 1 %}<span class="pl-plus" aria-hidden="true">+</span>{% endunless %}
+                  <span class="pl-stack__item">
+                    {% if component != blank and component.featured_image %}
+                      {{ component.featured_image | image_url: width: 300 | image_tag: loading: 'lazy', widths: '120,180,300', sizes: '70px', alt: component.title }}
+                    {% else %}
+                      <span class="pimg {{ visual }}" role="img" aria-label="{{ component.title | default: title | escape }}"></span>
+                    {% endif %}
+                    <span>{{ caption | escape }}</span>
+                  </span>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="pl-combo__body">
+            <h3>{% if bundle != blank %}{{ bundle.title | escape }}{% else %}{{ title | escape }}{% endif %}</h3>
+            <div class="pl-count">{{ count | escape }} products</div>
+            <p>{{ description }}</p>
+
+            {% assign compare = combo_total %}
+            {% if count_int == 2 %}{% assign price = 34900 %}{% elsif count_int == 3 %}{% assign price = 49900 %}{% elsif count_int == 5 %}{% assign price = 79900 %}{% else %}{% assign price = fb_price %}{% endif %}
+            {% assign bundle_url = '#bundles' %}
+            <div class="pl-price-row">
+              <strong>{{ price | money }}</strong>
+              {% if compare > price %}<s>{{ compare | money }}</s>{% endif %}
+              {% if compare > price %}{% assign discount = compare | minus: price | times: 100.0 | divided_by: compare | round %}<em>Save {{ compare | minus: price | money }}</em>{% endif %}
+            </div>
+            <div class="pl-fine">{{ section.settings.fine_print | escape }}</div>
+            <button class="pl-btn{% if featured %} pl-btn--primary{% else %} pl-btn--ghost{% endif %} pl-bundle-add" type="button" data-variant-ids="{{ combo_variants | escape }}">{{ section.settings.button_label | escape }} <span aria-hidden="true">→</span></button>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+    <div class="pl-swipecue" aria-hidden="true">→&nbsp; Swipe for more combos</div>
+    <p class="pl-railnote">Tapping “Shop bundle” opens the bundle picker with these products already added. You can still swap anything before you pay.</p>
+  </div>
+</section>
+
+<script>
+(function(){
+  if(window.__purelaneBundleAddBound)return; window.__purelaneBundleAddBound=true;
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('.pl-bundle-add'); if(!b)return;
+    var ids=(b.dataset.variantIds||'').split(',').filter(Boolean).map(function(id){return {id:Number(id),quantity:1};});
+    if(!ids.length)return; b.disabled=true;
+    fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:ids})})
+      .then(function(){window.location.href='/cart';}).catch(function(){b.disabled=false;});
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name":"03 Best-selling combos",
+  "tag":"section",
+  "class":"purelane-combos-section",
+  "settings":[
+    {"type":"text","id":"section_id","label":"HTML id","default":"combos"},
+    {"type":"text","id":"kicker","label":"Kicker","default":"Pre-built to save you money"},
+    {"type":"text","id":"heading","label":"Heading","default":"Best selling combos"},
+    {"type":"richtext","id":"description","label":"Description","default":"<p>Swipe through the boxes people order most. Each one is already priced below buying the same products on their own.</p>"},
+    {"type":"text","id":"aria_label","label":"Rail label","default":"Best selling combos"},
+    {"type":"text","id":"fine_print","label":"Fine print","default":"Inclusive of all taxes · COD available"},
+    {"type":"text","id":"button_label","label":"Button label","default":"Shop bundle"}
+  ],
+  "blocks":[{"type":"combo","name":"Combo","limit":10,"settings":[
+    {"type":"product","id":"bundle_product","label":"Real bundle product"},
+    {"type":"checkbox","id":"featured","label":"Featured","default":false},
+    {"type":"text","id":"save_label","label":"Save label","default":"You save"},
+    {"type":"text","id":"flag","label":"Flag","default":"Popular"},
+    {"type":"text","id":"title","label":"Title","default":"Kitchen essentials"},
+    {"type":"text","id":"count","label":"Product count","default":"3"},
+    {"type":"textarea","id":"description","label":"Description","default":"Includes the products shown above."},
+    {"type":"product","id":"product_1","label":"Component 1"},
+    {"type":"text","id":"product_1_caption","label":"Component 1 caption","default":"Cuts grease instantly"},
+    {"type":"product","id":"product_2","label":"Component 2"},
+    {"type":"text","id":"product_2_caption","label":"Component 2 caption","default":"Squeaky clean dishes"},
+    {"type":"product","id":"product_3","label":"Component 3"},
+    {"type":"text","id":"product_3_caption","label":"Component 3 caption","default":"Melts hard water stains"}
+  ]}],
+  "presets":[{"name":"03 Best-selling combos","blocks":[{"type":"combo","settings":{"featured":true,"flag":"Most popular"}},{"type":"combo"},{"type":"combo","settings":{"featured":true,"flag":"Best value","save_label":"Biggest saving"}},{"type":"combo"},{"type":"combo"}]}]
+}
+{% endschema %}

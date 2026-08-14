@@ -1,0 +1,58 @@
+<section class="sec" id="{{ section.settings.section_id | escape }}" data-scene="3">
+  <div class="wrap">
+    <div class="glass range rv">
+      <div class="range-head">
+        <div>
+          <span class="kicker">{{ section.settings.kicker | escape }}</span>
+          <h2 class="d2" style="margin-top:10px">{{ section.settings.heading | escape }}</h2>
+        </div>
+        <p class="body-s" style="max-width:34ch;margin-bottom:4px">{{ section.settings.description }}</p>
+      </div>
+      <div class="stripwrap">
+        <div class="rangerow">
+          {% for block in section.blocks %}
+            {% assign p = block.settings.product %}
+            {% case forloop.index %}
+              {% when 1 %}{% assign fallback_visual = 'p-floor' %}
+              {% when 2 %}{% assign fallback_visual = 'p-tap' %}
+              {% when 3 %}{% assign fallback_visual = 'p-kitchen' %}
+              {% when 4 %}{% assign fallback_visual = 'p-toilet' %}
+              {% when 5 %}{% assign fallback_visual = 'p-laundry' %}
+              {% when 6 %}{% assign fallback_visual = 'p-dish' %}
+              {% when 7 %}{% assign fallback_visual = 'p-metal' %}
+              {% when 8 %}{% assign fallback_visual = 'p-wm' %}
+              {% when 9 %}{% assign fallback_visual = 'p-handwash' %}
+              {% when 10 %}{% assign fallback_visual = 'p-eraser' %}
+            {% endcase %}
+            {% if p != blank and p.featured_image %}
+              <a href="{{ p.url }}" {{ block.shopify_attributes }} aria-label="{{ p.title | escape }}">
+                <span class="pimg" style="background-image:url('{{ p.featured_image | image_url: width: 420 }}');aspect-ratio:1/1; background-size:contain; background-position:center; background-repeat:no-repeat;"></span>
+              </a>
+            {% else %}
+              <span {{ block.shopify_attributes }} class="pimg {{ fallback_visual }}" style="width:90px;height:140px;" aria-hidden="true"></span>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      <p class="striphint">{{ section.settings.hint | escape }}</p>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name":"06 Full range",
+  "tag":"section",
+  "class":"purelane-range-section",
+  "settings":[
+    {"type":"text","id":"section_id","label":"HTML id","default":"range"},
+    {"type":"text","id":"kicker","label":"Kicker","default":"The full range"},
+    {"type":"text","id":"heading","label":"Heading","default":"Every room, one shelf"},
+    {"type":"textarea","id":"description","label":"Description","default":"Floors, taps, kitchen, laundry, bathroom and hands. Fourteen plant-based formulas that replace every harsh bottle under your sink."},
+    {"type":"text","id":"hint","label":"Swipe hint","default":"Swipe to see the full shelf"}
+  ],
+  "blocks":[
+    {"type":"product","name":"Product","limit":14,"settings":[{"type":"product","id":"product","label":"Product"}]}
+  ],
+  "presets":[{"name":"06 Full range","blocks":[{"type":"product"},{"type":"product"},{"type":"product"},{"type":"product"},{"type":"product"},{"type":"product"},{"type":"product"},{"type":"product"}]}]
+}
+{% endschema %}

@@ -1,0 +1,509 @@
+{
+  "sections": {
+    "purelane_hero": {
+      "type": "purelane-hero",
+      "blocks": {
+        "promise_1": {
+          "type": "promise",
+          "settings": {}
+        },
+        "promise_2": {
+          "type": "promise",
+          "settings": {
+            "icon": "shield",
+            "text": "Safe for\nkids & pets",
+            "short_text": "Kids & pet safe"
+          }
+        },
+        "promise_3": {
+          "type": "promise",
+          "settings": {
+            "icon": "zero",
+            "text": "Zero harsh\nchemicals",
+            "short_text": "Zero harsh chem"
+          }
+        },
+        "hero_slide_1": {
+          "type": "hero_slide",
+          "settings": {}
+        },
+        "hero_slide_2": {
+          "type": "hero_slide",
+          "settings": {
+            "label": "Any 2 products",
+            "saving": "Bundle saving"
+          }
+        },
+        "hero_slide_3": {
+          "type": "hero_slide",
+          "settings": {
+            "label": "Any 3 products",
+            "saving": "Best saving"
+          }
+        }
+      },
+      "block_order": [
+        "promise_1",
+        "promise_2",
+        "promise_3",
+        "hero_slide_1",
+        "hero_slide_2",
+        "hero_slide_3"
+      ],
+      "settings": {}
+    },
+    "purelane_shop": {
+      "type": "purelane-shop",
+      "blocks": {
+        "product_1": {
+          "type": "product",
+          "settings": {
+            "product": "tap-cleaner-limescale-remover-with-extra-10-ml"
+          }
+        },
+        "product_2": {
+          "type": "product",
+          "settings": {
+            "product": "kitchen-cleaner"
+          }
+        },
+        "product_3": {
+          "type": "product",
+          "settings": {
+            "product": "copper-bronze-brass-cleaner"
+          }
+        },
+        "product_4": {
+          "type": "product",
+          "settings": {
+            "product": "washing-machine-cleaner"
+          }
+        },
+        "product_5": {
+          "type": "product",
+          "settings": {
+            "product": "dishwash-gel"
+          }
+        },
+        "product_6": {
+          "type": "product",
+          "settings": {
+            "product": "laundry-detergent"
+          }
+        },
+        "product_7": {
+          "type": "product",
+          "settings": {
+            "product": "floor-cleaner"
+          }
+        },
+        "product_8": {
+          "type": "product",
+          "settings": {
+            "product": "toilet-cleaner"
+          }
+        }
+      },
+      "block_order": [
+        "product_1",
+        "product_2",
+        "product_3",
+        "product_4",
+        "product_5",
+        "product_6",
+        "product_7",
+        "product_8"
+      ],
+      "settings": {}
+    },
+    "purelane_best_selling_combos": {
+      "type": "purelane-best-selling-combos",
+      "blocks": {
+        "combo_1": {
+          "type": "combo",
+          "settings": {
+            "featured": true,
+            "flag": "Most popular",
+            "count": "3",
+            "product_1": "kitchen-cleaner",
+            "product_2": "dishwash-gel",
+            "product_3": "tap-cleaner-limescale-remover-with-extra-10-ml"
+          }
+        },
+        "combo_2": {
+          "type": "combo",
+          "settings": {
+            "count": "3",
+            "product_1": "laundry-detergent",
+            "product_2": "washing-machine-cleaner",
+            "product_3": "floor-cleaner"
+          }
+        },
+        "combo_3": {
+          "type": "combo",
+          "settings": {
+            "featured": true,
+            "flag": "Best value",
+            "save_label": "Biggest saving",
+            "count": "5",
+            "product_1": "kitchen-cleaner",
+            "product_2": "laundry-detergent",
+            "product_3": "floor-cleaner",
+            "product_4": "toilet-cleaner",
+            "product_5": "dishwash-gel"
+          }
+        },
+        "combo_4": {
+          "type": "combo",
+          "settings": {
+            "count": "3",
+            "product_1": "toilet-cleaner",
+            "product_2": "tap-cleaner-limescale-remover-with-extra-10-ml",
+            "product_3": "copper-bronze-brass-cleaner"
+          }
+        },
+        "combo_5": {
+          "type": "combo",
+          "settings": {
+            "count": "2",
+            "product_1": "tap-cleaner-limescale-remover-with-extra-10-ml",
+            "product_2": "toilet-cleaner"
+          }
+        }
+      },
+      "block_order": [
+        "combo_1",
+        "combo_2",
+        "combo_3",
+        "combo_4",
+        "combo_5"
+      ],
+      "settings": {}
+    },
+    "purelane_bundles": {
+      "type": "purelane-bundles",
+      "blocks": {
+        "tier_1": {
+          "type": "tier",
+          "settings": {
+            "tag": "Starter",
+            "quantity": "2",
+            "component_1": "kitchen-cleaner",
+            "component_2": "dishwash-gel"
+          }
+        },
+        "tier_2": {
+          "type": "tier",
+          "settings": {
+            "featured": true,
+            "tag": "Most popular",
+            "quantity": "3",
+            "component_1": "kitchen-cleaner",
+            "component_2": "tap-cleaner-limescale-remover-with-extra-10-ml",
+            "component_3": "dishwash-gel"
+          }
+        },
+        "tier_3": {
+          "type": "tier",
+          "settings": {
+            "tag": "Whole home",
+            "quantity": "5",
+            "component_1": "kitchen-cleaner",
+            "component_2": "laundry-detergent",
+            "component_3": "floor-cleaner",
+            "component_4": "toilet-cleaner",
+            "component_5": "dishwash-gel"
+          }
+        }
+      },
+      "block_order": [
+        "tier_1",
+        "tier_2",
+        "tier_3"
+      ],
+      "settings": {}
+    },
+    "purelane_reviews": {
+      "type": "purelane-reviews",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {}
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "title": "Best dishwash ever",
+            "body": "A gentle, effective clean that makes everyday washing easier.",
+            "author": "Priya",
+            "product_label": "Dishwash gel"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "title": "Great product, great packaging",
+            "body": "Very soft on hands with a lovely fragrance, and it feels good to be using far less plastic.",
+            "author": "Sunita",
+            "product_label": "Liquid handwash"
+          }
+        },
+        "review_4": {
+          "type": "review",
+          "settings": {
+            "title": "Dog friendly",
+            "body": "A cleaner that works hard without the harsh smell.",
+            "author": "Rohit S.",
+            "product_label": "Floor cleaner"
+          }
+        },
+        "review_5": {
+          "type": "review",
+          "settings": {
+            "title": "Sparkling taps again",
+            "body": "Hard water stains wipe away with far less scrubbing.",
+            "author": "Verified buyer",
+            "product_label": "Tap cleaner"
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_4",
+        "review_5"
+      ],
+      "settings": {}
+    },
+    "purelane_full_range": {
+      "type": "purelane-full-range",
+      "blocks": {
+        "product_1": {
+          "type": "product",
+          "settings": {}
+        },
+        "product_2": {
+          "type": "product",
+          "settings": {}
+        },
+        "product_3": {
+          "type": "product",
+          "settings": {}
+        },
+        "product_4": {
+          "type": "product",
+          "settings": {}
+        },
+        "product_5": {
+          "type": "product",
+          "settings": {}
+        },
+        "product_6": {
+          "type": "product",
+          "settings": {}
+        },
+        "product_7": {
+          "type": "product",
+          "settings": {}
+        },
+        "product_8": {
+          "type": "product",
+          "settings": {}
+        },
+        "product_9": {
+          "type": "product",
+          "settings": {}
+        },
+        "product_10": {
+          "type": "product",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "product_1",
+        "product_2",
+        "product_3",
+        "product_4",
+        "product_5",
+        "product_6",
+        "product_7",
+        "product_8",
+        "product_9",
+        "product_10"
+      ],
+      "settings": {}
+    },
+    "purelane_bundle_benefits": {
+      "type": "purelane-bundle-benefits",
+      "blocks": {
+        "benefit_1": {
+          "type": "benefit",
+          "settings": {}
+        },
+        "benefit_2": {
+          "type": "benefit",
+          "settings": {
+            "icon": "check",
+            "title": "One flat price",
+            "text": "No calculators, no comparing carts"
+          }
+        },
+        "benefit_3": {
+          "type": "benefit",
+          "settings": {
+            "icon": "star",
+            "title": "Curated by experts",
+            "text": "Products picked to work well together"
+          }
+        },
+        "benefit_4": {
+          "type": "benefit",
+          "settings": {
+            "icon": "truck",
+            "title": "Free shipping always",
+            "text": "Included on every bundle, all India"
+          }
+        }
+      },
+      "block_order": [
+        "benefit_1",
+        "benefit_2",
+        "benefit_3",
+        "benefit_4"
+      ],
+      "settings": {}
+    },
+    "purelane_bundle_categories": {
+      "type": "purelane-bundle-categories",
+      "blocks": {
+        "category_1": {
+          "type": "category",
+          "settings": {
+            "title": "Kitchen bundle",
+            "text": "Grease, dishes & more"
+          }
+        },
+        "category_2": {
+          "type": "category",
+          "settings": {
+            "title": "Bathroom bundle",
+            "text": "Deep clean & disinfect"
+          }
+        },
+        "category_3": {
+          "type": "category",
+          "settings": {
+            "title": "Laundry bundle",
+            "text": "Softer, fresher wash"
+          }
+        },
+        "category_4": {
+          "type": "category",
+          "settings": {
+            "title": "Hard water bundle",
+            "text": "Melt away limescale"
+          }
+        }
+      },
+      "block_order": [
+        "category_1",
+        "category_2",
+        "category_3",
+        "category_4"
+      ],
+      "settings": {}
+    },
+    "purelane_trust_bar": {
+      "type": "purelane-trust-bar",
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "mark": "\u2767",
+            "text": "Plant derived\nformulas"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "mark": "\u25a3",
+            "text": "Recyclable\npackaging"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "mark": "\u2661",
+            "text": "Safe for\nkids & pets"
+          }
+        },
+        "item_4": {
+          "type": "item",
+          "settings": {
+            "mark": "\u25ce",
+            "text": "Made in\nIndia"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4"
+      ],
+      "settings": {}
+    },
+    "purelane_signup": {
+      "type": "purelane-signup",
+      "settings": {}
+    },
+    "purelane_footer": {
+      "type": "purelane-footer",
+      "blocks": {
+        "column_1": {
+          "type": "column",
+          "settings": {
+            "heading": "Shop"
+          }
+        },
+        "column_2": {
+          "type": "column",
+          "settings": {
+            "heading": "About"
+          }
+        },
+        "column_3": {
+          "type": "column",
+          "settings": {
+            "heading": "Get in touch"
+          }
+        }
+      },
+      "block_order": [
+        "column_1",
+        "column_2",
+        "column_3"
+      ],
+      "settings": {}
+    },
+    "purelane_sticky_cta": {
+      "type": "purelane-sticky-cta",
+      "settings": {}
+    }
+  },
+  "order": [
+    "purelane_hero",
+    "purelane_reviews",
+    "purelane_shop",
+    "purelane_best_selling_combos",
+    "purelane_bundles",
+    "purelane_full_range",
+    "purelane_bundle_benefits",
+    "purelane_bundle_categories",
+    "purelane_trust_bar",
+    "purelane_signup",
+    "purelane_footer",
+    "purelane_sticky_cta"
+  ]
+}

@@ -1,0 +1,119 @@
+<div class="purelane-header-chrome">
+  <div class="ticker" role="region" aria-label="Purelane promotions">
+    <div class="track">
+      {% assign promo_items = section.blocks | where: 'type', 'promo' %}
+      {% if promo_items.size > 0 %}
+        {% for repeat in (1..2) %}
+          {% for block in promo_items %}
+            <span {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</span>
+          {% endfor %}
+        {% endfor %}
+      {% else %}
+        {% assign promo_texts = 'BUNDLE ACROSS INDIA|100% PLANT-BASED AND NON-TOXIC|LOVED BY 30,000+ HAPPY HOMES|BUY 3 AT FLAT ₹499|FREE SHIPPING ON EVERY BUNDLE ACROSS INDIA' | split: '|' %}
+        {% for repeat in (1..2) %}
+          {% for text in promo_texts %}
+            <span>{{ text }}</span>
+          {% endfor %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+  <header id="hdr">
+    <div class="navpill glass">
+      <a class="brand" href="#top" aria-label="Purelane home">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3 20.5 8v8L12 21 3.5 16V8L12 3Z"/>
+            <path d="M12 12 20.5 8M12 12v9M12 12 3.5 8"/>
+          </svg>
+        </span>
+        <span class="txt">
+          <span class="n1">Purelane</span>
+          <span class="n2">Clean, simply</span>
+        </span>
+      </a>
+
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#top" data-pl-scroll="top">Home</a>
+        <a href="#ingredients">Ingredients</a>
+        <a href="#whybundles" data-pl-scroll="whybundles">How it works</a>
+        <a href="#shop" data-pl-scroll="shop">Shop</a>
+        <a href="#bundles" data-pl-scroll="bundles">Bundles</a>
+      </nav>
+
+      <div class="navtools">
+        <a class="ico hide-s" href="{{ routes.search_url }}" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </a>
+        <a class="ico hide-s" href="{{ routes.account_url }}" aria-label="Account">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.6 3.1-5.6 7-5.6s7 2 7 5.6"/></svg>
+        </a>
+        <a class="ico" href="{{ routes.cart_url }}" aria-label="Cart, {{ cart.item_count }} items">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h2l2.2 10.4a1.6 1.6 0 0 0 1.6 1.3h7.6a1.6 1.6 0 0 0 1.6-1.3L20.5 9H6.4"/><circle cx="10" cy="20.5" r="1.1"/><circle cx="17.5" cy="20.5" r="1.1"/></svg>
+          <span class="dot">{{ cart.item_count }}</span>
+        </a>
+        <button class="ico burger" type="button" aria-label="Menu" aria-expanded="false" data-purelane-menu-toggle>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+</div>
+
+{% stylesheet %}
+  .purelane-header-chrome { position: relative; z-index: 50; }
+  .purelane-header-chrome > .ticker { margin: 0; }
+
+  .purelane-header-chrome .ticker {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,.74);
+    border-bottom: 1px solid rgba(75,58,143,.12);
+    color: rgba(36,26,61,.78);
+  }
+  .purelane-header-chrome .ticker .track {
+    width: max-content;
+    gap: 40px;
+    padding: 0 20px;
+  }
+  .purelane-header-chrome .ticker span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .purelane-header-chrome .ticker span:nth-child(5n+1),
+  .purelane-header-chrome .ticker span:nth-child(5n+4) {
+    color: #4f7d10;
+  }
+  .purelane-header-chrome #hdr { margin: 0; }
+  .purelane-header-chrome .navpill { width: 100%; }
+  .purelane-header-chrome .navtools a { color: inherit; }
+  .purelane-header-chrome .navtools a:hover { text-decoration: none; }
+  @media (max-width: 600px) {
+    .purelane-header-chrome .brand .txt { display: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Purelane header",
+  "blocks": [
+    {
+      "type": "promo",
+      "name": "Promotion",
+      "limit": 8,
+      "settings": [
+        {"type":"text","id":"text","label":"Promotion text","default":"BUNDLE ACROSS INDIA"}
+      ]
+    }
+  ],
+  "settings": []
+}
+{% endschema %}

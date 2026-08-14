@@ -1,0 +1,18 @@
+<div class="sticky purelane-sticky-cta" role="region" aria-label="Bundle offer">
+  <span class="lbl"><b>{{ section.settings.title | escape }}</b><span>{{ section.settings.subtitle | escape }}</span></span>
+  <a class="btn btn-primary btn-sm" href="{{ section.settings.link | default:'#bundles' }}">{{ section.settings.button | escape }}</a>
+</div>
+{% schema %}
+{
+  "name":"12 Sticky CTA",
+  "tag":"section",
+  "class":"purelane-sticky-section",
+  "settings":[
+    {"type":"text","id":"title","label":"Title","default":"Pick any 3, pay ₹499"},
+    {"type":"text","id":"subtitle","label":"Subtitle","default":"Free shipping, always"},
+    {"type":"text","id":"button","label":"Button","default":"Build bundle"},
+    {"type":"url","id":"link","label":"Link"}
+  ],
+  "presets":[{"name":"12 Sticky CTA"}]
+}
+{% endschema %}

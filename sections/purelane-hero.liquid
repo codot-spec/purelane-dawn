@@ -1,0 +1,137 @@
+{% comment %}
+  Purelane Hero
+  Source: purelane-homepage(1).html
+{% endcomment %}
+<section id="{{ section.settings.section_id | escape }}" class="pl-section pl-hero" aria-labelledby="pl-hero-title-{{ section.id }}">
+  <div class="pl-hero__inner page-width">
+    <div class="pl-hero__badges" aria-label="{{ section.settings.badges_label | escape }}">
+      {% for block in section.blocks %}
+        {% if block.type == 'promise' %}
+          <div class="pl-glass-2 pl-hero__badge" {{ block.shopify_attributes }}>
+            <span class="pl-icon" aria-hidden="true">
+              {% case block.settings.icon %}
+                {% when 'leaf' %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg>
+                {% when 'shield' %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3 4.5 6v6.2c0 4.3 3.1 7.6 7.5 8.8 4.4-1.2 7.5-4.5 7.5-8.8V6L12 3Z"/><path d="m9 12 2.2 2.2L15.4 10"/></svg>
+                {% else %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.4"/><path d="M6.4 17.6 17.6 6.4"/></svg>
+              {% endcase %}
+            </span>
+            <span>{{ block.settings.text | escape | newline_to_br }}</span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="pl-hero__copy">
+      <h1 id="pl-hero-title-{{ section.id }}" class="pl-d1">
+        {{ section.settings.heading | escape | newline_to_br }}
+      </h1>
+      <div class="pl-rule" aria-hidden="true"><i></i><span>✦</span><i></i></div>
+      <p class="pl-lede">{{ section.settings.description }}</p>
+      <div class="pl-actions">
+        {% if section.settings.primary_label != blank %}
+          <a class="pl-btn pl-btn--primary" href="{{ section.settings.primary_link | default: '#shop' }}">
+            {{ section.settings.primary_label | escape }} <span aria-hidden="true">→</span>
+          </a>
+        {% endif %}
+        {% if section.settings.secondary_label != blank %}
+          <a class="pl-btn pl-btn--ghost" href="{{ section.settings.secondary_link | default: '#how' }}">
+            {{ section.settings.secondary_label | escape }}
+          </a>
+        {% endif %}
+      </div>
+
+      <div class="pl-hero__badgestrip">
+        {% for block in section.blocks %}
+          {% if block.type == 'promise' %}
+            <div class="pl-glass-2" {{ block.shopify_attributes }}>{{ block.settings.short_text | default: block.settings.text | escape }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="pl-hero__product" data-pl-hero-rotator>
+      <div class="pl-hero-stage">
+        {% assign hero_products = section.blocks | where: 'type', 'hero_slide' %}
+        {% for block in hero_products %}
+          {% assign p = block.settings.product %}
+          <article class="pl-hero-slide{% if forloop.first %} is-active{% endif %}" data-slide="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+            <div class="pl-hero-products">
+              {% if p != blank %}
+                <a href="{{ p.url }}" class="pl-hero-product" aria-label="{{ p.title | escape }}">
+                  {% if p.featured_image %}
+                    {{ p.featured_image | image_url: width: 800 | image_tag: loading: 'eager', widths: '360,540,720,800', sizes: '(max-width: 900px) 88vw, 50vw', class: 'pl-product-image', alt: p.featured_image.alt | default: p.title }}
+                  {% else %}
+                    <div class="pl-image-placeholder" role="img" aria-label="{{ p.title | escape }}">No image</div>
+                  {% endif %}
+                </a>
+              {% else %}
+                <div class="pl-image-placeholder">Choose a product</div>
+              {% endif %}
+            </div>
+            <div class="pl-glass-2 pl-hero-price">
+              <span>{{ block.settings.label | escape }}</span>
+              {% if p != blank %}
+                <strong>{{ p.price | money }}</strong>
+                {% if p.compare_at_price > p.price %}<s>{{ p.compare_at_price | money }}</s>{% endif %}
+              {% endif %}
+              {% if block.settings.saving != blank %}<em>{{ block.settings.saving | escape }}</em>{% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+      {% if hero_products.size > 1 %}
+        <div class="pl-dots" role="tablist" aria-label="Hero product offers">
+          {% for block in hero_products %}
+            <button type="button" class="{% if forloop.first %}is-active{% endif %}" role="tab" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="Show offer {{ forloop.index }}" data-slide-button="{{ forloop.index0 }}"></button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "01 Hero",
+  "tag": "section",
+  "class": "purelane-hero-section",
+  "settings": [
+    {"type":"text","id":"section_id","label":"HTML id","default":"top"},
+    {"type":"text","id":"badges_label","label":"Promise group label","default":"Product promises"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"Clean\nThat\nLasts"},
+    {"type":"richtext","id":"description","label":"Description","default":"<p>Homecare that works on the toughest grime, made from plants. Kind to your home, your family and the world outside it.</p>"},
+    {"type":"text","id":"primary_label","label":"Primary button","default":"Shop now"},
+    {"type":"url","id":"primary_link","label":"Primary link"},
+    {"type":"text","id":"secondary_label","label":"Secondary button","default":"How it works"},
+    {"type":"url","id":"secondary_link","label":"Secondary link"}
+  ],
+  "blocks":[
+    {
+      "type":"promise",
+      "name":"Promise",
+      "limit":3,
+      "settings":[
+        {"type":"select","id":"icon","label":"Icon","options":[{"value":"leaf","label":"Leaf"},{"value":"shield","label":"Shield"},{"value":"zero","label":"Zero"}],"default":"leaf"},
+        {"type":"text","id":"text","label":"Desktop text","default":"Plant\npowered"},
+        {"type":"text","id":"short_text","label":"Compact text","default":"Plant powered"}
+      ]
+    },
+    {
+      "type":"hero_slide",
+      "name":"Hero offer",
+      "limit":3,
+      "settings":[
+        {"type":"product","id":"product","label":"Product"},
+        {"type":"text","id":"label","label":"Offer label","default":"Single bottle"},
+        {"type":"text","id":"saving","label":"Saving text","default":"33% off"}
+      ]
+    }
+  ],
+  "presets":[
+    {"name":"01 Hero","blocks":[{"type":"promise"},{"type":"promise","settings":{"icon":"shield","text":"Safe for\nkids & pets","short_text":"Kids & pet safe"}},{"type":"promise","settings":{"icon":"zero","text":"Zero harsh\nchemicals","short_text":"Zero harsh chem"}},{"type":"hero_slide"},{"type":"hero_slide","settings":{"label":"Any 2 products","saving":"Bundle saving"}},{"type":"hero_slide","settings":{"label":"Any 3 products","saving":"Best saving"}}]}
+  ]
+}
+{% endschema %}

@@ -1,0 +1,56 @@
+<section id="{{ section.settings.section_id | escape }}" class="pl-section pl-reviews" data-scene="1">
+  <div class="page-width">
+    <div class="pl-revhead">
+      <span class="pl-kicker">{{ section.settings.kicker | escape }}</span>
+      <span class="pl-agg"><span class="pl-stars" aria-hidden="true">★★★★★</span> <b>{{ section.settings.rating }}</b> {{ section.settings.rating_text | escape }}</span>
+      <span class="pl-agg">{{ section.settings.homes_prefix | escape }} <b>{{ section.settings.homes | escape }}</b> {{ section.settings.homes_suffix | escape }}</span>
+    </div>
+  </div>
+
+  <div class="pl-revrail" aria-label="{{ section.settings.aria_label | escape }}" data-pl-marquee>
+    <div class="pl-revtrack">
+      {% for pass in (1..2) %}
+        {% for block in section.blocks %}
+          <article class="pl-glass-2 pl-rcard" {{ block.shopify_attributes }}>
+            <div class="pl-stars" aria-label="{{ block.settings.rating }} out of 5 stars">★★★★★</div>
+            <h3>{{ block.settings.title | escape }}</h3>
+            <p>{{ block.settings.body }}</p>
+            <div class="pl-who">
+              <span aria-hidden="true">✓</span>
+              <b>{{ block.settings.author | escape }}</b>
+              {% if block.settings.product_label != blank %}<span>· {{ block.settings.product_label | escape }}</span>{% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name":"05 Reviews rail",
+  "tag":"section",
+  "class":"purelane-reviews-section",
+  "settings":[
+    {"type":"text","id":"section_id","label":"HTML id","default":"reviews"},
+    {"type":"text","id":"kicker","label":"Kicker","default":"That's what they said"},
+    {"type":"text","id":"rating","label":"Aggregate rating","default":"4.8"},
+    {"type":"text","id":"rating_text","label":"Rating text","default":"from 8,000+ reviews"},
+    {"type":"text","id":"homes_prefix","label":"Homes prefix","default":"Loved by"},
+    {"type":"text","id":"homes","label":"Homes figure","default":"12 lakh+"},
+    {"type":"text","id":"homes_suffix","label":"Homes suffix","default":"homes"},
+    {"type":"text","id":"aria_label","label":"Rail label","default":"Customer reviews"}
+  ],
+  "blocks":[
+    {"type":"review","name":"Review","limit":20,"settings":[
+      {"type":"range","id":"rating","label":"Rating","min":1,"max":5,"step":1,"default":5},
+      {"type":"text","id":"title","label":"Title","default":"Works like a charm"},
+      {"type":"textarea","id":"body","label":"Review","default":"Finally an eco option that cleans as well as the chemical detergent I used for years, and it smells better."},
+      {"type":"text","id":"author","label":"Author","default":"Verified buyer"},
+      {"type":"text","id":"product_label","label":"Product label","default":"Laundry detergent"}
+    ]}
+  ],
+  "presets":[{"name":"05 Reviews rail","blocks":[{"type":"review"},{"type":"review","settings":{"title":"Best dishwash ever","body":"A gentle, effective clean that makes everyday washing easier.","author":"Priya","product_label":"Dishwash gel"}},{"type":"review","settings":{"title":"Great product, great packaging","body":"Very soft on hands with a lovely fragrance, and it feels good to be using far less plastic.","author":"Sunita","product_label":"Liquid handwash"}},{"type":"review","settings":{"title":"Dog friendly","body":"A cleaner that works hard without the harsh smell.","author":"Rohit S.","product_label":"Floor cleaner"}},{"type":"review","settings":{"title":"Sparkling taps again","body":"Hard water stains wipe away with far less scrubbing.","author":"Verified buyer","product_label":"Tap cleaner"}}]}]
+}
+{% endschema %}
