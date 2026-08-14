@@ -15,6 +15,7 @@
         {% assign bundle_price = block.settings.bundle_price | plus: 0 %}
         {% assign selected_count = 0 %}
         {% assign bundle_available = true %}
+
         {% for i in (1..5) %}
           {% assign key = 'component_' | append: i %}
           {% assign p = block.settings[key] %}
@@ -33,7 +34,10 @@
         {% if selected_count > 0 %}
           {% assign featured = block.settings.featured %}
           <article class="pl-glass pl-tier{% if featured %} is-featured{% endif %}" {{ block.shopify_attributes }}>
-            {% if block.settings.tag != blank %}<span class="pl-tier__tag">{{ block.settings.tag | escape }}</span>{% endif %}
+            {% if block.settings.tag != blank %}
+              <span class="pl-tier__tag">{{ block.settings.tag | escape }}</span>
+            {% endif %}
+
             <div class="pl-tierpix{% if selected_count == 5 %} five{% endif %}">
               {% for i in (1..5) %}
                 {% assign key = 'component_' | append: i %}
@@ -47,18 +51,46 @@
                 {% endif %}
               {% endfor %}
             </div>
+
             {% assign savings = bundle_total | minus: bundle_price %}
             <div class="pl-tier__qty">{{ selected_count }}<small>Products</small></div>
-            <div class="pl-tier__price">{% if bundle_price > 0 %}{{ bundle_price | money }}{% else %}{{ bundle_total | money }}{% endif %}</div>
-            {% if bundle_price > 0 and savings > 0 %}<div class="pl-fine">Save {{ savings | money }} · <s>{{ bundle_total | money }}</s></div>{% endif %}
-            {% if block.settings.per_product != blank %}<p class="pl-body-s">{{ block.settings.per_product | escape }}</p>{% endif %}
+
+            <div class="pl-tier__price">
+              {% if bundle_price > 0 %}
+                {{ bundle_price | money }}
+              {% else %}
+                {{ bundle_total | money }}
+              {% endif %}
+            </div>
+
+            {% if bundle_price > 0 and savings > 0 %}
+              <div class="pl-fine">Save {{ savings | money }} · <s>{{ bundle_total | money }}</s></div>
+            {% endif %}
+
+            {% if block.settings.per_product != blank %}
+              <p class="pl-body-s">{{ block.settings.per_product | escape }}</p>
+            {% endif %}
+
             <ul>
-              {% if block.settings.bullet_1 != blank %}<li><span aria-hidden="true">✓</span>{{ block.settings.bullet_1 | escape }}</li>{% endif %}
-              {% if block.settings.bullet_2 != blank %}<li><span aria-hidden="true">✓</span>{{ block.settings.bullet_2 | escape }}</li>{% endif %}
-              {% if block.settings.bullet_3 != blank %}<li><span aria-hidden="true">✓</span>{{ block.settings.bullet_3 | escape }}</li>{% endif %}
+              {% if block.settings.bullet_1 != blank %}
+                <li><span aria-hidden="true">✓</span>{{ block.settings.bullet_1 | escape }}</li>
+              {% endif %}
+              {% if block.settings.bullet_2 != blank %}
+                <li><span aria-hidden="true">✓</span>{{ block.settings.bullet_2 | escape }}</li>
+              {% endif %}
+              {% if block.settings.bullet_3 != blank %}
+                <li><span aria-hidden="true">✓</span>{{ block.settings.bullet_3 | escape }}</li>
+              {% endif %}
             </ul>
+
             {% if bundle_available and bundle_variants != blank %}
-              <button class="pl-btn {% if featured %}pl-btn--primary{% else %}pl-btn--ghost{% endif %} pl-bundle-add" type="button" data-variant-ids="{{ bundle_variants | escape }}" data-discount-code="{{ block.settings.discount_code | escape }}">{{ section.settings.button_label | escape }}{% if featured %}<span aria-hidden="true">→</span>{% endif %}</button>
+              <button
+                class="pl-btn {% if featured %}pl-btn--primary{% else %}pl-btn--ghost{% endif %} pl-bundle-add"
+                type="button"
+                data-variant-ids="{{ bundle_variants | escape }}"
+              >
+                {{ section.settings.button_label | escape }}{% if featured %}<span aria-hidden="true">→</span>{% endif %}
+              </button>
             {% else %}
               <button class="pl-btn pl-btn--ghost" type="button" disabled>Currently unavailable</button>
             {% endif %}
@@ -71,20 +103,44 @@
 
 <script>
 (function(){
-  if(window.__purelaneBundleAddBound)return; window.__purelaneBundleAddBound=true;
+  if(window.__purelaneBundleAddBound)return;
+  window.__purelaneBundleAddBound=true;
+
   document.addEventListener('click',function(e){
-    var b=e.target.closest('.pl-bundle-add'); if(!b)return;
-    var ids=(b.dataset.variantIds||'').split(',').filter(Boolean).map(function(id){return {id:Number(id),quantity:1};});
-    var discount=(b.dataset.discountCode||'').trim();
+    var b=e.target.closest('.pl-bundle-add');
+    if(!b)return;
+
+    var ids=(b.dataset.variantIds||'')
+      .split(',')
+      .filter(Boolean)
+      .map(function(id){return {id:Number(id),quantity:1};});
+
     if(!ids.length)return;
+
     b.disabled=true;
-    fetch(window.Shopify.routes.root + 'cart/add.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({items:ids})})
-      .then(function(r){return r.json().then(function(data){if(!r.ok)throw new Error(data.description||data.message||'Cart add failed'); return data;});})
-      .then(function(){
-        if(discount){ window.location.href=window.Shopify.routes.root + 'discount/' + encodeURIComponent(discount) + '?redirect=' + encodeURIComponent(window.Shopify.routes.root + 'cart'); }
-        else { window.location.href=window.Shopify.routes.root + 'cart'; }
-      })
-      .catch(function(err){console.error(err); b.disabled=false; b.setAttribute('aria-label',err.message);});
+
+    fetch(window.Shopify.routes.root + 'cart/add.js',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Accept':'application/json'
+      },
+      body:JSON.stringify({items:ids})
+    })
+    .then(function(r){
+      return r.json().then(function(data){
+        if(!r.ok)throw new Error(data.description||data.message||'Cart add failed');
+        return data;
+      });
+    })
+    .then(function(){
+      window.location.href=window.Shopify.routes.root + 'cart';
+    })
+    .catch(function(err){
+      console.error(err);
+      b.disabled=false;
+      b.setAttribute('aria-label',err.message);
+    });
   });
 })();
 </script>
@@ -101,22 +157,36 @@
     {"type":"richtext","id":"description","label":"Description","default":"<p>Choose real Shopify products for each bundle tier.</p>"},
     {"type":"text","id":"button_label","label":"Button label","default":"Build this box"}
   ],
-  "blocks":[{"type":"tier","name":"Bundle tier","limit":3,"settings":[
-    {"type":"checkbox","id":"featured","label":"Featured","default":false},
-    {"type":"text","id":"tag","label":"Tag","default":"Starter"},
-    {"type":"text","id":"quantity","label":"Displayed quantity","default":"2"},
-    {"type":"text","id":"bundle_price","label":"Bundle price (₹)","default":"349"},
-    {"type":"text","id":"discount_code","label":"Shopify discount code","default":""},
-    {"type":"text","id":"per_product","label":"Per-product note","default":""},
-    {"type":"product","id":"component_1","label":"Component 1"},
-    {"type":"product","id":"component_2","label":"Component 2"},
-    {"type":"product","id":"component_3","label":"Component 3"},
-    {"type":"product","id":"component_4","label":"Component 4"},
-    {"type":"product","id":"component_5","label":"Component 5"},
-    {"type":"text","id":"bullet_1","label":"Bullet 1","default":""},
-    {"type":"text","id":"bullet_2","label":"Bullet 2","default":""},
-    {"type":"text","id":"bullet_3","label":"Bullet 3","default":""}
-  ]}],
-  "presets":[{"name":"04 Bundles","blocks":[{"type":"tier","settings":{"tag":"Starter","quantity":2}},{"type":"tier","settings":{"featured":true,"tag":"Most popular","quantity":3}},{"type":"tier","settings":{"tag":"Whole home","quantity":5}}]}]
+  "blocks":[
+    {
+      "type":"tier",
+      "name":"Bundle tier",
+      "limit":3,
+      "settings":[
+        {"type":"checkbox","id":"featured","label":"Featured","default":false},
+        {"type":"text","id":"tag","label":"Tag","default":"Starter"},
+        {"type":"text","id":"bundle_price","label":"Bundle price (₹)","default":"349"},
+        {"type":"text","id":"per_product","label":"Per-product note"},
+        {"type":"product","id":"component_1","label":"Component 1"},
+        {"type":"product","id":"component_2","label":"Component 2"},
+        {"type":"product","id":"component_3","label":"Component 3"},
+        {"type":"product","id":"component_4","label":"Component 4"},
+        {"type":"product","id":"component_5","label":"Component 5"},
+        {"type":"text","id":"bullet_1","label":"Bullet 1"},
+        {"type":"text","id":"bullet_2","label":"Bullet 2"},
+        {"type":"text","id":"bullet_3","label":"Bullet 3"}
+      ]
+    }
+  ],
+  "presets":[
+    {
+      "name":"04 Bundles",
+      "blocks":[
+        {"type":"tier","settings":{"tag":"Starter","bundle_price":"349"}},
+        {"type":"tier","settings":{"featured":true,"tag":"Most popular","bundle_price":"499"}},
+        {"type":"tier","settings":{"tag":"Whole home","bundle_price":"799"}}
+      ]
+    }
+  ]
 }
 {% endschema %}
